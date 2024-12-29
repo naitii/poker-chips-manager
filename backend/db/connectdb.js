@@ -1,18 +1,14 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 
-async function connectToDatabase(connectionString) {
-const client = new MongoClient(connectionString);
+const connectDb = async () => {
   try {
-    await client.connect();
-    console.log("Connected to MongoDB");
-    const database = client.db("testDB"); // Replace 'testDB' with your database name
-    const collection = database.collection("testCollection"); // Example collection
-    // Perform database operations here
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
-  } finally {
-    await client.close();
-  }
-}
+    const conn = await mongoose.connect(process.env.MONGO_URI);
 
-export default connectToDatabase;
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    process.exit(1);
+  }
+};
+
+export default connectDb;
