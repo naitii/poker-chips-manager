@@ -5,7 +5,8 @@ import shortid from "shortid";
 const createGame = async (req, res) => {
     try {
         const { initialAmount, password, maxPlayers } = req.body;
-        const name = shortid.generate();
+        let name = shortid.generate();
+        name = name.substring(0, 4);
         const newGame = new Game({
           initialAmount,
           name,
@@ -19,8 +20,14 @@ const createGame = async (req, res) => {
     }
 };
 
-const getGame = (req, res) => {
-	res.json({ message: "get game route" });  
+const getGame = async (req, res) => {
+	try {
+        const query = req.params.name;
+        const game = await Game.findOne({name: query});
+        res.status(200).json(game);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
 
 export { createGame, getGame };
