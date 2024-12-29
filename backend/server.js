@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import connectToDatabase from "./db/connectdb.js";
 import userRoutes from "./routes/userRoutes.js";
+import gameRoutes from "./routes/gameRoutes.js";
 
 const app = express();
 
@@ -15,7 +16,8 @@ app.get("/", (req, res) => {
 connectToDatabase(connectionString);
 
 app.use("/user", userRoutes);
+app.use("/game/", gameRoutes);
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Example app listening on port http://localhost:${port}`);
 });

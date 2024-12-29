@@ -1,4 +1,3 @@
-import React from 'react';
 import RoomForm from './components/RoomForm';
 import Logo from './components/Logo';
 
