@@ -15,7 +15,6 @@ app.get("/", (req, res) => {
 connectDb();
 
 app.use(express.json());
-app.use("/user", userRoutes);
 app.use("/game", gameRoutes);
 
 app.listen(port, () => {
