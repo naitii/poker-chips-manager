@@ -5,5 +5,6 @@ const router = express.Router();
 
 router.post("/create", gameController.createGame);
 router.get("/:name", gameController.getGame);
+router.post("/join", gameController.joinGame);
 
 export default router;
