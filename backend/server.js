@@ -1,6 +1,5 @@
 import dotenv from "dotenv";
 import express from "express";
-import userRoutes from "./routes/userRoutes.js";
 import gameRoutes from "./routes/gameRoutes.js";
 import connectDb from "./db/connectdb.js";
 
