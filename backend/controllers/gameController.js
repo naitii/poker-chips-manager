@@ -28,19 +28,19 @@ const createGame = async (req, res) => {
     });
 
     await newGame.save();
-    res.status(200).json(newGame);
+    return res.status(200).json(newGame);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
 const getGame = async (req, res) => {
   try {
     const query = req.params.name;
-    const game = await Game.findOne({ name: query });
-    res.status(200).json(game);
+    const game = await Game.findOne({ name: query }).select("-password");
+    return res.status(200).json(game);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -50,17 +50,27 @@ const joinGame = async (req, res) => {
     const { name: userName } = userDetails;
 
     if (!password || !userDetails || !userName) {
-      res
+      return res
         .status(400)
-        .json({ message: "Missing required fields.", boddy: { ...req.body } });
+        .json({ message: "Missing required fields.", body: { ...req.body } });
     }
 
-    const game = await Game.findOne({ name: gameId, password: password });
+    const game = await Game.findOne({
+      name: gameId,
+      password: password,
+    }).populate("players");
+;
 
     if (!game) {
-      res.status(404).json({ message: "Game Not Found." });
+      return res.status(404).json({ message: "Game Not Found." });
     }
 
+    if(game.players.length >= game.maxPlayers) {
+      return res.status(400).json({ message: "Game is full." });
+    }
+    if(game.players.find(player => player.name === userName)) {
+      return res.status(400).json({ message: "Name Already Taken." });
+    }
     const newPlayer = new Player({
       name: userName,
       amount: game.initialAmount,
@@ -73,9 +83,9 @@ const joinGame = async (req, res) => {
 
     const populatedGame = await Game.findById(game._id).populate("players");
 
-    res.status(200).json(populatedGame);
+    return res.status(200).json(populatedGame);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: error.message });
   }
 };
 
