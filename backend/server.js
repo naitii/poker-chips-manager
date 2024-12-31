@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import express from "express";
 import gameRoutes from "./routes/gameRoutes.js";
+import actionRoutes from "./routes/actionRoutes.js";
 import connectDb from "./db/connectdb.js";
 
 const app = express();
@@ -15,6 +16,7 @@ connectDb();
 
 app.use(express.json());
 app.use("/game", gameRoutes);
+app.use("/action", actionRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port http://localhost:${port}`);
