@@ -9,5 +9,6 @@ router.post("/matchbet", actionController.matchBet);
 router.post("/callwinner", actionController.callOfWinner);
 router.post("/vote", actionController.voteForWinner);
 router.post("/declarewinner", actionController.declareWinnerOfRound);
+router.post("/leavegame", actionController.leaveGame);
 
 export default router;

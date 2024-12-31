@@ -100,6 +100,31 @@ const matchBet = async (req, res) => {
     }
 };
 
+const leaveGame = async (req, res) => {
+    try {
+        const { gameName, playerName } = req.body;
+        if (!gameName || !playerName) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+        const game = await Game.findOne({ name: gameName }).select("-password").populate("players");
+        if (!game) {
+            return res.status(404).json({ message: "Game not found" });
+        }
+        const player = game.players.find((player) => player.name === playerName);
+        if (!player) {
+            return res.status(404).json({ message: "Player not found" });
+        }
+        if (game.currentRoundWinner === playerName) {
+            game.currentRoundWinner = "";
+        }
+        game.players = game.players.filter((player) => player.name !== playerName);
+        await game.save();
+        return res.status(200).json(game);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+}
+
 const callOfWinner = async (req, res) => {
     try {
         const { gameName, playerName, winnerName } = req.body;
@@ -199,4 +224,4 @@ const declareWinnerOfRound = async (req, res) => {
     }
 };
 
-export { placebet, raiseBet, matchBet, declareWinnerOfRound, callOfWinner, voteForWinner };
+export { placebet, raiseBet, matchBet, declareWinnerOfRound, callOfWinner, voteForWinner, leaveGame };
