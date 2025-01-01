@@ -174,7 +174,7 @@ const Room = () => {
   };
 
   const handleVoteForWinner = async () => {
-    
+    console.log("Voted player:", votedPlayer);
     try {
       const res = await axios.post(
         `/action/callwinner`,
