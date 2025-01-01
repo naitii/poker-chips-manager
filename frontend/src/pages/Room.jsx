@@ -174,6 +174,7 @@ const Room = () => {
   };
 
   const handleVoteForWinner = async (pl) => {
+    
     try {
       const res = await axios.post(
         `/action/callwinner`,
@@ -464,7 +465,7 @@ const Room = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={handleVoteForWinner}
+                  onClick={handleVoteForWinner(votedPlayer)}
                   className="py-2 px-4 rounded-lg bg-purple-500 hover:bg-purple-600 text-white"
                 >
                   Vote
