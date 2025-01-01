@@ -445,6 +445,7 @@ const Room = () => {
                 <select
                   className="w-full p-2 mt-2 border border-gray-300 rounded-md"
                   onChange={(e) => setVotedPlayer(e.target.value)}
+                  value={votedPlayer}
                 >
                   <option value="">None</option>
                   {players.map((player) => (
