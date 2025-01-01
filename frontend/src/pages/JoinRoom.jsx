@@ -2,6 +2,9 @@ import { useState } from "react";
 import Logo from "../components/Logo";
 import toast from "react-hot-toast";
 import axios from "axios";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:3000");
 
 const JoinRoom = () => {
   const [roomName, setRoomName] = useState("");
@@ -32,14 +35,20 @@ const JoinRoom = () => {
         if (res.status !== 200) {
           toast.error(res.data || "An error occurred");
         }
-        const data = res.data;
+        const data = await res.data;
         localStorage.setItem("roomName", data.name);
         localStorage.setItem("roomPassword", data.password);
         toast.success("Room joined successfully");
+        socket.emit("updateRoom", {
+          message: `${localStorage.getItem("playerName")} joined the room`,
+          roomId: data._id.toString(),
+        });
         window.location.href = `/room/${data._id}`;
     } catch (error) {
       console.error("Failed to join room:", error);
-        toast.error("Failed to join room");
+        toast.error(
+          JSON.parse(error.request.response).message || "Failed to join room"
+        );
     }
 
     // Clear inputs after submission or navigate to the room page

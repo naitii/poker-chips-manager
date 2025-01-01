@@ -3,6 +3,7 @@ import Logo from "../components/Logo";
 import axios from "axios";
 import toast from "react-hot-toast";
 
+
 const CreateRoom = () => {
     const [initialAmount, setInitialAmount] = useState("");
     const [roomPassword, setRoomPassword] = useState("");
@@ -40,13 +41,16 @@ const CreateRoom = () => {
         if (res.status !== 200) {
           toast.error(res.data || "An error occurred");
         }
-        const data = res.data;
+        const data = await res.data;
         localStorage.setItem("roomName", data.name);
         localStorage.setItem("roomPassword", data.password);
         toast.success("Room created successfully");
         window.location.href  = `/room/${data._id}`;
       } catch (error) {
         console.error("Failed to create room:", error);
+        toast.error(
+          JSON.parse(error.request.response).message || "Failed to create room"
+        );
         return;
       }      
       setInitialAmount("");

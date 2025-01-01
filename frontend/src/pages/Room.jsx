@@ -3,20 +3,23 @@ import Logo from "../components/Logo";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import io from "socket.io-client";
+
+const socket = io.connect('http://localhost:3000');
 
 const Room = () => {
-  const [roomName, setRoomName] = useState("");
-  const [roomPassword, setRoomPassword] = useState("");
-  const [players, setPlayers] = useState([]);
-  const [gameDetails, setGameDetails] = useState({});
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState(0);
-  const [actionType, setActionType] = useState("");
-  const [isVotingModalOpen, setIsVotingModalOpen] = useState(false);
-  const [votedPlayer, setVotedPlayer] = useState("");
-  const roomId = useParams().roomId;
-  const playerName = localStorage.getItem("playerName");
-  const [showVotePopup, setShowVotePopup] = useState(false);
+    const [roomName, setRoomName] = useState("");
+    const [roomPassword, setRoomPassword] = useState("");
+    const [players, setPlayers] = useState([]);
+    const [gameDetails, setGameDetails] = useState({});
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedAmount, setSelectedAmount] = useState(0);
+    const [actionType, setActionType] = useState("");
+    const [isVotingModalOpen, setIsVotingModalOpen] = useState(false);
+    const [votedPlayer, setVotedPlayer] = useState("");
+    const roomId = useParams().roomId;
+    const playerName = localStorage.getItem("playerName");
+    const [showVotePopup, setShowVotePopup] = useState(false);
 
 
   useEffect(() => {
@@ -58,7 +61,10 @@ const Room = () => {
         setShowVotePopup(false);
     } catch (error) {
       console.error("Error submitting vote:", error);
-      toast.error("Failed to submit your vote.");
+      toast.error(
+        JSON.parse(error?.request?.response)?.message ||
+          "Failed to submit your vote."
+      );
     }
   };
 
@@ -77,17 +83,47 @@ const Room = () => {
         if (response.status === 200) {
           setPlayers(response.data.players);
           setGameDetails(response.data);
+          socket.emit("join_room", roomId.toString());
         } else {
           toast.error(response.data.message || "Failed to fetch room details");
         }
       } catch (error) {
         console.error("Error fetching room details:", error);
-        toast.error("Failed to fetch room details");
+        toast.error(
+          "Failed to fetch room details"
+        );
       }
     };
 
     if (roomId) fetchRoomDetails();
+
+    
   }, [roomId]);
+
+
+  useEffect(() => {
+    socket.on("updateData", async (data) => {
+      await axios.get(`http://localhost:3000/game/${roomId}`).then((res) => {
+        setPlayers(res.data.players);
+        setGameDetails(res.data);
+        if(data)
+            toast(data, {
+            style: {
+                border: "1px solid #4f46e5",
+                padding: "16px",
+            },
+            });
+        });
+    });
+    socket.on("refresh", () => {
+        console.log("refreshing room");
+        location.reload();
+    });
+    return () => {
+      socket.off("updateData");
+    }
+  },[socket]);
+
 
   const handleOpenModal = (type) => {
     const player = players.find((p) => p.name === playerName);
@@ -101,7 +137,7 @@ const Room = () => {
       return;
     }
 
-    setSelectedAmount(maxAmount / 2); // Default slider value
+    setSelectedAmount(maxAmount / 2);
     setActionType(type);
     setIsModalOpen(true);
   };
@@ -129,9 +165,10 @@ const Room = () => {
         toast.success("Action performed successfully!");
         setGameDetails(res.data);
         setPlayers(res.data.players);
+        socket.emit("updateRoom", {message: `${playerName} has matched the bet`, roomId: gameDetails._id});
       }
     } catch (error) {
-      toast.error(error.message || "Failed to perform action");
+      toast.error(JSON.parse(error?.request?.response)?.message || "Failed to perform action");
     }
   };
 
@@ -158,11 +195,16 @@ const Room = () => {
             toast.success("Vote casted successfully!");
         }
         setIsVotingModalOpen(false);
+        setGameDetails(res.data);
+        setPlayers(res.data.players);
+            socket.emit("refreshRoom", {roomId: gameDetails._id});
       } else {
         toast.error(res.data.message || "Failed to cast vote.");
       }
     } catch (error) {
-      toast.error(error.message || "Error casting vote.");
+      toast.error(
+        JSON.parse(error?.request?.response)?.message || "Error casting vote."
+      );
     }
   };
 
@@ -205,12 +247,18 @@ const Room = () => {
         toast.success("Action performed successfully!");
         setGameDetails(res.data);
         setPlayers(res.data.players);
+        if(actionType === "placebet")
+            socket.emit("updateRoom", {message: `${playerName} has placed a bet of $${selectedAmount}`, roomId: gameDetails._id});
+        else
+            socket.emit("updateRoom", {message: `${playerName} has raised the bet by $${selectedAmount}`, roomId: gameDetails._id});
       } else {
         toast.error(res.data.message || "An error occurred");
       }
     } catch (error) {
       console.error("Failed to perform action:", error);
-      toast.error("Failed to perform action");
+      toast.error(
+        JSON.parse(error?.request?.response)?.message || "Failed to perform action"
+      );
     }
 
     setIsModalOpen(false);
@@ -232,6 +280,10 @@ const Room = () => {
             toast.success("Round ended successfully.");
             setGameDetails(res.data);
             setPlayers(res.data.players);
+            socket.emit("updateRoom", {
+              message: "Round ended",
+              roomId: gameDetails._id,
+            });
         }
         else{
             toast.error(res.data.message || "Failed to end round")
@@ -240,7 +292,7 @@ const Room = () => {
     } catch (error) {
       console.error("Error starting next round:", error);
       toast.error(
-        JSON.parse(error.request.response).message ||
+        JSON.parse(error?.request?.response)?.message ||
           "Failed to start next round"
       );        
     }
