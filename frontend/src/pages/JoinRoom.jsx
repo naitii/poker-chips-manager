@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
 
-const socket = io(`${import.meta.env.VITE_API_URL}`);
+const socket = io(`https://poker-manager.onrender.com`);
 
 const JoinRoom = () => {
   const [roomName, setRoomName] = useState("");

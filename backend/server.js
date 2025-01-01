@@ -14,8 +14,8 @@ const __dirname = path.resolve();
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173", 
-    methods: ["GET", "POST", "PUT", "DELETE"], 
+    origin: "https://poker-manager.onrender.com",
+    methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
@@ -24,12 +24,12 @@ app.use(
 //socket io
 
 const server = http.createServer(app);
-const io = new Server(server,{
-    cors:{
-        origin: "http://localhost:5173",
-        methods: ["GET", "POST"],
-    }
-})
+const io = new Server(server, {
+  cors: {
+    origin: "https://poker-manager.onrender.com",
+    methods: ["GET", "POST"],
+  },
+});
 io.on("connection", (socket) => {
     
     socket.on("join_room", (id) => {
