@@ -24,12 +24,8 @@ app.use(
 //socket io
 
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "https://poker-manager.onrender.com",
-    methods: ["GET", "POST"],
-  },
-});
+const io = new Server(server);
+
 io.on("connection", (socket) => {
     
     socket.on("join_room", (id) => {
