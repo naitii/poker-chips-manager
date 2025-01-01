@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
 
-const socket = io("http://localhost:3000");
+const socket = io(`${import.meta.env.VITE_API_URL}`);
 
 const JoinRoom = () => {
   const [roomName, setRoomName] = useState("");
@@ -25,13 +25,16 @@ const JoinRoom = () => {
     }
 
     try {
-        const res = await axios.post(`http://localhost:3000/game/join`, {
-          gameId: roomName,
-          password: roomPassword,
-          userDetails: {
-            name: localStorage.getItem("playerName"),
-          },
-        });
+        const res = await axios.post(
+          `${import.meta.env.VITE_API_URL}/game/join`,
+          {
+            gameId: roomName,
+            password: roomPassword,
+            userDetails: {
+              name: localStorage.getItem("playerName"),
+            },
+          }
+        );
         if (res.status !== 200) {
           toast.error(res.data || "An error occurred");
         }

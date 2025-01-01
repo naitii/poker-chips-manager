@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
 
-const socket = io.connect('http://localhost:3000');
+const socket = io.connect(`${import.meta.env.VITE_API_URL}`);
 
 const Room = () => {
     const [roomName, setRoomName] = useState("");
@@ -38,7 +38,7 @@ const Room = () => {
     try {
         if(accepted){
             const response = await axios.post(
-                "http://localhost:3000/action/vote",
+                `${import.meta.env.VITE_API_URL}/action/vote`,
                 {
                     gameName: roomName,
                     playerName,
@@ -78,7 +78,7 @@ const Room = () => {
         setRoomPassword(storedRoomPassword || "");
 
         const response = await axios.get(
-          `http://localhost:3000/game/${roomId}`
+          `${import.meta.env.VITE_API_URL}/game/${roomId}`
         );
         if (response.status === 200) {
           setPlayers(response.data.players);
@@ -103,7 +103,7 @@ const Room = () => {
 
   useEffect(() => {
     socket.on("updateData", async (data) => {
-      await axios.get(`http://localhost:3000/game/${roomId}`).then((res) => {
+      await axios.get(`${import.meta.env.VITE_API_URL}/game/${roomId}`).then((res) => {
         setPlayers(res.data.players);
         setGameDetails(res.data);
         if(data)
@@ -150,7 +150,7 @@ const Room = () => {
   const handleMatch = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:3000/action/matchbet`,
+        `${import.meta.env.VITE_API_URL}/action/matchbet`,
         {
           gameName: roomName,
           playerName: playerName,
@@ -176,7 +176,7 @@ const Room = () => {
   const handleVoteForWinner = async (pl) => {
     try {
       const res = await axios.post(
-        `http://localhost:3000/action/callwinner`,
+        `${import.meta.env.VITE_API_URL}/action/callwinner`,
         {
           gameName: roomName,
           playerName,
@@ -230,7 +230,7 @@ const Room = () => {
     }
 
     try {
-      const endpoint = `http://localhost:3000/action/${actionType}`;
+      const endpoint = `${import.meta.env.VITE_API_URL}/action/${actionType}`;
       const payload = {
         gameName: roomName,
         playerName,
@@ -271,7 +271,7 @@ const Room = () => {
       return;
     }
     try {
-        const res = await axios.post("http://localhost:3000/action/declarewinner",{
+        const res = await axios.post(`${import.meta.env.VITE_API_URL}/action/declarewinner`,{
             gameName: roomName,
         },{
             headers: { "Content-Type": "application/json" },

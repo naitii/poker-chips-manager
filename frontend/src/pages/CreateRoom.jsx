@@ -22,7 +22,7 @@ const CreateRoom = () => {
       
       try {
         const res = await axios.post(
-          "http://localhost:3000/game/create",
+          `${import.meta.env.VITE_API_URL}/game/create`,
           {
             userDetails: {
               name: localStorage.getItem("playerName"),

@@ -6,7 +6,9 @@ import connectDb from "./db/connectdb.js";
 import cors from "cors";
 import http from "http";
 import {Server} from "socket.io";
+import path from "path";
 
+const __dirname = path.resolve();
 
 const app = express();
 app.use(
@@ -45,14 +47,17 @@ io.on("connection", (socket) => {
 dotenv.config();
 const port = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 connectDb();
 
 app.use(express.json());
 app.use("/game", gameRoutes);
 app.use("/action", actionRoutes);
+
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+app.get("*", (req, res) =>{
+  res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html"))
+});
 
 server.listen(port, () => {
   console.log(`Example app listening on port http://localhost:${port}`);
