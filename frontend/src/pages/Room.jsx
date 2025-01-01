@@ -173,7 +173,7 @@ const Room = () => {
     }
   };
 
-  const handleVoteForWinner = async (pl) => {
+  const handleVoteForWinner = async () => {
     
     try {
       const res = await axios.post(
@@ -190,10 +190,7 @@ const Room = () => {
       );
 
       if (res.status === 200) {
-        if(pl === "None"){
-            toast.success("");
-        }
-        else{
+        if(votedPlayer !== ""){
             toast.success("Vote casted successfully!");
         }
         setIsVotingModalOpen(false);
@@ -465,7 +462,7 @@ const Room = () => {
                   Cancel
                 </button>
                 <button
-                  onClick={handleVoteForWinner(votedPlayer)}
+                  onClick={handleVoteForWinner}
                   className="py-2 px-4 rounded-lg bg-purple-500 hover:bg-purple-600 text-white"
                 >
                   Vote
