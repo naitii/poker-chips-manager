@@ -4,7 +4,7 @@ import * as gameController from "../controllers/gameController.js";
 const router = express.Router();
 
 router.post("/create", gameController.createGame);
-router.get("/:name", gameController.getGame);
+router.get("/:id", gameController.getGame);
 router.post("/join", gameController.joinGame);
 
 export default router;

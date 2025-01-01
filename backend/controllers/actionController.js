@@ -18,7 +18,9 @@ const placebet = async (req, res) => {
     if (!game) {
      return res.status(404).json({ message: "Game not found" });
     }
-
+    if(game.currentBet >0){
+        return res.status(400).json({ message: "Cannot place bet when there is already a bet" });
+    }
     const player = game.players.find((player) => player.name === playerName);
 
     if (!player) {
@@ -128,7 +130,7 @@ const leaveGame = async (req, res) => {
 const callOfWinner = async (req, res) => {
     try {
         const { gameName, playerName, winnerName } = req.body;
-        if (!gameName || !playerName || !winnerName) {
+        if (!gameName || !playerName ) {
             return res.status(400).json({ message: "All fields are required" });
         }
         const game = await Game.findOne({ name: gameName }).select("-password").populate("players");
@@ -141,9 +143,21 @@ const callOfWinner = async (req, res) => {
         }
         const winner = game.players.find((player) => player.name === winnerName);
         if (!winner) {
-            return res.status(404).json({ message: "Winner not found" });
+            if(winnerName !== "") {
+                return res.status(404).json({ message: "Winner not found" });
+            }
         }
         game.currentRoundWinner = winnerName;
+        for (let pl of game.players) {
+            if (pl.name !== playerName) {
+                pl.acceptWinner = false;
+                await pl.save();
+            }
+        }
+        if(winnerName !== ""){
+            player.acceptWinner = true;
+        }
+        await player.save();
         await game.save();
         return res.status(200).json(game);
     } catch (error) {

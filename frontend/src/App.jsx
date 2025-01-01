@@ -1,19 +1,36 @@
-import RoomForm from './components/RoomForm';
-import Logo from './components/Logo';
+import JoinRoom from "./pages/JoinRoom.jsx";
+import CreateRoom from "./pages/CreateRoom.jsx";
+import { RouterProvider } from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
+import HomePage from './pages/HomePage';
+import Room from './pages/Room';
+import { Toaster } from "react-hot-toast";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <HomePage />,
+  },
+  {
+    path: "/join",
+    element: <JoinRoom />,
+  },
+  {
+    path: "/create",
+    element: <CreateRoom />,
+  },
+  {
+    path: "/room/:roomId",
+    element: <Room />,
+  }
+]);
 
 function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <Logo />
-        
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Join the <div className="text-blue-400 inline-block">PCM</div>
-        </h1>
-
-        <RoomForm />
-      </div>
-    </div>
+    <>
+        <RouterProvider router={router}/>
+        <Toaster />
+    </>
   );
 }
 

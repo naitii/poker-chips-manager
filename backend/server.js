@@ -3,8 +3,18 @@ import express from "express";
 import gameRoutes from "./routes/gameRoutes.js";
 import actionRoutes from "./routes/actionRoutes.js";
 import connectDb from "./db/connectdb.js";
+import cors from "cors";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: "http://localhost:5173", 
+    methods: ["GET", "POST", "PUT", "DELETE"], 
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
 
 dotenv.config();
 const port = process.env.PORT || 3000;

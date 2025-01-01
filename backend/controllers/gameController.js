@@ -6,7 +6,7 @@ const createGame = async (req, res) => {
   try {
     const { initialAmount, password, maxPlayers, userDetails } = req.body;
     const { name: userName } = userDetails;
-    const name = shortid.generate().substring(0, 4);
+    const name = shortid.generate().substring(0, 5);
 
     if (!initialAmount || !password || !userDetails || !userName) {
       return res.status(400).json({ message: "Missing required fields." });
@@ -36,8 +36,8 @@ const createGame = async (req, res) => {
 
 const getGame = async (req, res) => {
   try {
-    const query = req.params.name;
-    const game = await Game.findOne({ name: query }).select("-password");
+    const query = req.params.id;
+    const game = await Game.findOne({ _id: query }).select("-password").populate("players");
     return res.status(200).json(game);
   } catch (error) {
     return res.status(500).json({ message: error.message });
