@@ -7,6 +7,7 @@ import cors from "cors";
 import http from "http";
 import {Server} from "socket.io";
 import path from "path";
+import job from "./cron/cron.js";
 
 const __dirname = path.resolve();
 
@@ -48,6 +49,7 @@ dotenv.config();
 const port = process.env.PORT || 3000;
 
 connectDb();
+job.start();
 
 app.use(express.json());
 app.use("/game", gameRoutes);
