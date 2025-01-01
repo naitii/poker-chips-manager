@@ -247,216 +247,229 @@ const Room = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center p-4">
-      {/* Voting Popup */}
-      {showVotePopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold text-center mb-4">
-              Do you accept {gameDetails.currentRoundWinner} as the winner of
-              this round?
-            </h2>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={() => handleVote(true)}
-                className="py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600"
-              >
-                Accept
-              </button>
-              <button
-                onClick={() => handleVote(false)}
-                className="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600"
-              >
-                Reject
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
-        <Logo />
-
-        {/* Room Info */}
-        <h1 className="text-2xl font-bold text-center text-gray-800">
-          Room Name: <span className="text-blue-400">{roomName}</span>
-        </h1>
-        <div className="mb-6 text-center">
-          <p className="text-sm text-gray-700">
-            Room Password: <span className="font-medium">{roomPassword}</span>
-          </p>
-        </div>
-        <div className="mb-6 flex justify-center gap-16">
-          <p className="text-md font-semibold text-gray-700">
-            Current Bet: ${gameDetails.currentBet || 0}
-          </p>
-          <p className="text-md font-semibold text-gray-700">
-            Pot: ${gameDetails.pot || 0}
-          </p>
-        </div>
-
-        {/* Player List */}
-        <h2 className="text-xl text-center font-semibold text-gray-800 mb-4">
-          Players
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {players.length > 0 ? (
-            players.map((player) => (
-              <div
-                key={player._id}
-                className="bg-indigo-50 p-4 rounded-lg shadow-sm flex justify-between items-center"
-              >
-                <div>
-                  <p className="text-lg font-medium text-gray-800">
-                    {player.name}
-                    {player.name === playerName && (
-                      <span className="text-green-500 text-sm ml-2">(You)</span>
-                    )}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Amount: ${player.amount}
-                  </p>
-                </div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center p-4 gap-4">
+      <div>
+        {/* Voting Popup */}
+        {showVotePopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h2 className="text-xl font-bold text-center mb-4">
+                Do you accept {gameDetails.currentRoundWinner} as the winner of
+                this round?
+              </h2>
+              <div className="flex justify-between mt-6">
+                <button
+                  onClick={() => handleVote(true)}
+                  className="py-2 px-4 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleVote(false)}
+                  className="py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
+                  Reject
+                </button>
               </div>
-            ))
-          ) : (
-            <p className="text-gray-600">No players yet.</p>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
+        <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+          <Logo />
 
-        {/* Betting Controls */}
-        <div className="mt-6 flex justify-center gap-4">
-          <button
-            onClick={() => handleOpenModal("placebet")}
-            disabled={gameDetails.currentBet > 0} // Disable if currentBet is not zero
-            className={`py-2 px-4 rounded-lg font-medium bg-blue-500 hover:bg-blue-600 text-white ${
-              gameDetails.currentBet > 0 ? "cursor-not-allowed opacity-50" : ""
-            }`}
-          >
-            Place Bet
-          </button>
-          <button
-            onClick={() => handleOpenModal("raise")}
-            disabled={!gameDetails.currentBet}
-            className={`py-2 px-4 rounded-lg font-medium text-white ${
-              !gameDetails.currentBet
-                ? "cursor-not-allowed bg-yellow-400"
-                : "bg-yellow-500 hover:bg-yellow-600"
-            }`}
-          >
-            Raise
-          </button>
-          <button
-            onClick={() => handleMatch()}
-            disabled={!gameDetails.currentBet}
-            className={`py-2 px-4 rounded-lg font-medium text-white ${
-              !gameDetails.currentBet
-                ? "cursor-not-allowed bg-green-400"
-                : "bg-green-500 hover:bg-green-600"
-            }`}
-          >
-            Match
-          </button>
-        </div>
+          {/* Room Info */}
+          <h1 className="text-2xl font-bold text-center text-gray-800">
+            Room Name: <span className="text-blue-400">{roomName}</span>
+          </h1>
+          <div className="mb-6 text-center">
+            <p className="text-sm text-gray-700">
+              Room Password: <span className="font-medium">{roomPassword}</span>
+            </p>
+          </div>
+          <div className="mb-6 flex justify-center gap-16">
+            <p className="text-md font-semibold text-gray-700">
+              Current Bet: ${gameDetails.currentBet || 0}
+            </p>
+            <p className="text-md font-semibold text-gray-700">
+              Pot: ${gameDetails.pot || 0}
+            </p>
+          </div>
 
-        {/* Vote for Winner Button */}
-        <div className="mt-6 flex justify-center gap-8">
-          <button
-            onClick={() => setIsVotingModalOpen(true)}
-            className="py-2  px-4 rounded-lg bg-purple-500 text-white hover:bg-purple-600"
-          >
-            Select Round Winner
-          </button>
-          <button
-            onClick={() => nextRound()}
-            className="py-2  px-4 rounded-lg bg-gray-800 text-white hover:bg-gray-400"
-          >
-            Next Round
-          </button>
-        </div>
-      </div>
+          {/* Player List */}
+          <h2 className="text-xl text-center font-semibold text-gray-800 mb-4">
+            Players
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {players.length > 0 ? (
+              players.map((player) => (
+                <div
+                  key={player._id}
+                  className="bg-indigo-50 p-4 rounded-lg shadow-sm flex justify-between items-center"
+                >
+                  <div>
+                    <p className="text-lg font-medium text-gray-800">
+                      {player.name}
+                      {player.name === playerName && (
+                        <span className="text-green-500 text-sm ml-2">
+                          (You)
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Amount: ${player.amount}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600">No players yet.</p>
+            )}
+          </div>
 
-      {/* Modal for Vote for Winner */}
-      {isVotingModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-80">
-            <h2 className="text-xl font-bold mb-4 text-center">
+          {/* Betting Controls */}
+          <div className="mt-6 flex justify-center gap-4">
+            <button
+              onClick={() => handleOpenModal("placebet")}
+              disabled={gameDetails.currentBet > 0} // Disable if currentBet is not zero
+              className={`py-2 px-4 rounded-lg font-medium bg-blue-500 hover:bg-blue-600 text-white ${
+                gameDetails.currentBet > 0
+                  ? "cursor-not-allowed opacity-50"
+                  : ""
+              }`}
+            >
+              Place Bet
+            </button>
+            <button
+              onClick={() => handleOpenModal("raise")}
+              disabled={!gameDetails.currentBet}
+              className={`py-2 px-4 rounded-lg font-medium text-white ${
+                !gameDetails.currentBet
+                  ? "cursor-not-allowed bg-yellow-400"
+                  : "bg-yellow-500 hover:bg-yellow-600"
+              }`}
+            >
+              Raise
+            </button>
+            <button
+              onClick={() => handleMatch()}
+              disabled={!gameDetails.currentBet}
+              className={`py-2 px-4 rounded-lg font-medium text-white ${
+                !gameDetails.currentBet
+                  ? "cursor-not-allowed bg-green-400"
+                  : "bg-green-500 hover:bg-green-600"
+              }`}
+            >
+              Match
+            </button>
+          </div>
+
+          {/* Vote for Winner Button */}
+          <div className="mt-6 flex justify-center gap-8">
+            <button
+              onClick={() => setIsVotingModalOpen(true)}
+              className="py-2  px-4 rounded-lg bg-purple-500 text-white hover:bg-purple-600"
+            >
               Select Round Winner
-            </h2>
-            <div className="mb-4">
-              <p className="text-center text-sm text-gray-700">
-                Select a player to vote for as the winner.
-              </p>
-              <select
-                className="w-full p-2 mt-2 border border-gray-300 rounded-md"
-                onChange={(e) => setVotedPlayer(e.target.value)}
-              >
-                <option value="">None</option>
-                {players.map((player) => (
-                  <option key={player._id} value={player.name}>
-                    {player.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={() => setIsVotingModalOpen(false)}
-                className="py-2 px-4 rounded-lg bg-gray-300 hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleVoteForWinner}
-                className="py-2 px-4 rounded-lg bg-purple-500 hover:bg-purple-600 text-white"
-              >
-                Vote
-              </button>
-            </div>
+            </button>
+            <button
+              onClick={() => nextRound()}
+              className="py-2  px-4 rounded-lg bg-gray-800 text-white hover:bg-gray-400"
+            >
+              Next Round
+            </button>
           </div>
         </div>
-      )}
 
-      {/* Modal for Bet/Raise Amount */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-xl w-80">
-            <h2 className="text-xl font-bold mb-4 text-center">
-              {actionType === "placebet" ? "Place Bet" : "Raise Amount"}
-            </h2>
-            <input
-              type="range"
-              min="1"
-              max={
-                actionType === "raise"
-                  ? Math.max(
-                      0,
-                      (players.find((p) => p.name === playerName)?.amount ||
-                        0) - (gameDetails.currentBet || 0)
-                    )
-                  : players.find((p) => p.name === playerName)?.amount || 1
-              }
-              value={selectedAmount}
-              onChange={handleSliderChange}
-              className="w-full slider"
-            />
-            <p className="text-center mt-2">Amount: ${selectedAmount}</p>
-            <div className="flex justify-between mt-6">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="py-2 px-4 rounded-lg bg-gray-300 hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmAction}
-                className="py-2 px-4 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                Confirm
-              </button>
+        {/* Modal for Vote for Winner */}
+        {isVotingModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-80">
+              <h2 className="text-xl font-bold mb-4 text-center">
+                Select Round Winner
+              </h2>
+              <div className="mb-4">
+                <p className="text-center text-sm text-gray-700">
+                  Select a player to vote for as the winner.
+                </p>
+                <select
+                  className="w-full p-2 mt-2 border border-gray-300 rounded-md"
+                  onChange={(e) => setVotedPlayer(e.target.value)}
+                >
+                  <option value="">None</option>
+                  {players.map((player) => (
+                    <option key={player._id} value={player.name}>
+                      {player.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex justify-between mt-6">
+                <button
+                  onClick={() => setIsVotingModalOpen(false)}
+                  className="py-2 px-4 rounded-lg bg-gray-300 hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleVoteForWinner}
+                  className="py-2 px-4 rounded-lg bg-purple-500 hover:bg-purple-600 text-white"
+                >
+                  Vote
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Modal for Bet/Raise Amount */}
+        {isModalOpen && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-xl w-80">
+              <h2 className="text-xl font-bold mb-4 text-center">
+                {actionType === "placebet" ? "Place Bet" : "Raise Amount"}
+              </h2>
+              <input
+                type="range"
+                min="1"
+                max={
+                  actionType === "raise"
+                    ? Math.max(
+                        0,
+                        (players.find((p) => p.name === playerName)?.amount ||
+                          0) - (gameDetails.currentBet || 0)
+                      )
+                    : players.find((p) => p.name === playerName)?.amount || 1
+                }
+                value={selectedAmount}
+                onChange={handleSliderChange}
+                className="w-full slider"
+              />
+              <p className="text-center mt-2">Amount: ${selectedAmount}</p>
+              <div className="flex justify-between mt-6">
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="py-2 px-4 rounded-lg bg-gray-300 hover:bg-gray-400"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmAction}
+                  className="py-2 px-4 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="w-1/3 min-h-screen">
+          <img
+            src="/hand_rank.jpg"
+            alt="Poker Hand Rankings"
+            className="rounded-lg shadow-lg object-contain"
+          />
+      </div>
     </div>
   );
 };
