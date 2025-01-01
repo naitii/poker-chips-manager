@@ -26,7 +26,7 @@ const JoinRoom = () => {
 
     try {
         const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/game/join`,
+          `/game/join`,
           {
             gameId: roomName,
             password: roomPassword,

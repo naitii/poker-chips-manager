@@ -38,7 +38,7 @@ const Room = () => {
     try {
         if(accepted){
             const response = await axios.post(
-                `${import.meta.env.VITE_API_URL}/action/vote`,
+                `/action/vote`,
                 {
                     gameName: roomName,
                     playerName,
@@ -78,7 +78,7 @@ const Room = () => {
         setRoomPassword(storedRoomPassword || "");
 
         const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/game/${roomId}`
+          `/game/${roomId}`
         );
         if (response.status === 200) {
           setPlayers(response.data.players);
@@ -103,7 +103,7 @@ const Room = () => {
 
   useEffect(() => {
     socket.on("updateData", async (data) => {
-      await axios.get(`${import.meta.env.VITE_API_URL}/game/${roomId}`).then((res) => {
+      await axios.get(`/game/${roomId}`).then((res) => {
         setPlayers(res.data.players);
         setGameDetails(res.data);
         if(data)
@@ -150,7 +150,7 @@ const Room = () => {
   const handleMatch = async () => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/action/matchbet`,
+        `/action/matchbet`,
         {
           gameName: roomName,
           playerName: playerName,
@@ -176,7 +176,7 @@ const Room = () => {
   const handleVoteForWinner = async (pl) => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/action/callwinner`,
+        `/action/callwinner`,
         {
           gameName: roomName,
           playerName,
@@ -230,7 +230,7 @@ const Room = () => {
     }
 
     try {
-      const endpoint = `${import.meta.env.VITE_API_URL}/action/${actionType}`;
+      const endpoint = `/action/${actionType}`;
       const payload = {
         gameName: roomName,
         playerName,
@@ -271,7 +271,7 @@ const Room = () => {
       return;
     }
     try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}/action/declarewinner`,{
+        const res = await axios.post(`/action/declarewinner`,{
             gameName: roomName,
         },{
             headers: { "Content-Type": "application/json" },

@@ -21,8 +21,7 @@ const CreateRoom = () => {
       // Save room settings to local storage or backend
       
       try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_API_URL}/game/create`,
+        const res = await axios.post(`/game/create`,
           {
             userDetails: {
               name: localStorage.getItem("playerName"),
