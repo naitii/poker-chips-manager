@@ -247,8 +247,8 @@ const Room = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center p-4 gap-4">
-      <div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-100 md:flex items-center justify-center p-4 gap-4">
+      <div className="mb-4">
         {/* Voting Popup */}
         {showVotePopup && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -463,7 +463,7 @@ const Room = () => {
           </div>
         )}
       </div>
-      <div className="w-1/3 min-h-screen">
+      <div className="md:w-1/3 min-h-screen ">
           <img
             src="/hand_rank.jpg"
             alt="Poker Hand Rankings"
