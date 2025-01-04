@@ -1,13 +1,13 @@
 import cron from "cron";
 import https from "https";
 
-const URL = "https://poker-manager.onrender.com";
-
+const url_poker_manager = "https://poker-manager.onrender.com";
+const url_altnetaji = "https://altnetaji.onrender.com/api/v1/hello";
 const job = new cron.CronJob("*/14 * * * *", function () {
   https
-    .get(URL, (res) => {
+    .get(url_poker_manager, (res) => {
       if (res.statusCode === 200) {
-        console.log("GET request sent successfully");
+        console.log("Poker-manager - GET request sent successfully");
       } else {
         console.log("GET request failed", res.statusCode);
       }
@@ -15,6 +15,15 @@ const job = new cron.CronJob("*/14 * * * *", function () {
     .on("error", (e) => {
       console.error("Error while sending request", e);
     });
+
+    https.
+    get(url_altnetaji, (res) => {
+      if (res.statusCode === 200) {
+        console.log("Altnetaji - GET request sent successfully");
+      } else {
+        console.log("GET request failed", res.statusCode);
+      }
+    })
 });
 
 export default job;

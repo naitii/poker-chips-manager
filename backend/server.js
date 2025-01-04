@@ -42,7 +42,7 @@ io.on("connection", (socket) => {
 
 
 dotenv.config();
-const port = process.env.PORT || 3000;
+const port = 5173;
 
 connectDb();
 job.start();
@@ -58,5 +58,5 @@ app.get("*", (req, res) =>{
 });
 
 server.listen(port, () => {
-  console.log(`Example app listening on port http://localhost:${port}`);
+  console.log(`Backend server started`);
 });
