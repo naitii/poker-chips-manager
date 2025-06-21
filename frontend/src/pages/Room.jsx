@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import io from "socket.io-client";
 
-const socket = io.connect(`https://poker-manager.onrender.com`);
+const socket = io();
 
 const Room = () => {
     const [roomName, setRoomName] = useState("");
@@ -411,6 +411,42 @@ const Room = () => {
               }`}
             >
               Match
+            </button>
+            <button
+              onClick={async () => {
+                try {
+                  const res = await axios.post(
+                    `/action/allin`,
+                    {
+                      gameName: roomName,
+                      playerName: playerName,
+                    },
+                    {
+                      headers: { "Content-Type": "application/json" },
+                      withCredentials: true,
+                    }
+                  );
+                  if (res.status !== 200) {
+                    toast.error(res.data.message || "An error occurred");
+                  } else {
+                    toast.success("Went all-in successfully!");
+                    setGameDetails(res.data);
+                    setPlayers(res.data.players);
+                    socket.emit("updateRoom", {
+                      message: `${playerName} has gone all-in!`,
+                      roomId: gameDetails._id,
+                    });
+                  }
+                } catch (error) {
+                  toast.error(
+                    JSON.parse(error?.request?.response)?.message ||
+                      "Failed to go all-in"
+                  );
+                }
+              }}
+              className="py-2 px-4 rounded-lg font-medium bg-red-500 hover:bg-red-600 text-white"
+            >
+              All-in
             </button>
           </div>
 

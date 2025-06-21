@@ -4,4 +4,14 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    proxy: {
+      '/game': 'http://localhost:5173',
+      '/action': 'http://localhost:5173',
+      '/socket.io': {
+        target: 'ws://localhost:5173',
+        ws: true,
+      },
+    },
+  },
 })
